@@ -1,0 +1,33 @@
+.main {
+    margin: 2rem 20rem;
+}
+
+.task-list {
+    width: 100%;
+    height: fit-content;
+    margin: 12px 0 0 0;
+    border-radius: 10px;
+    padding: 1rem;
+}
+
+p {
+    margin: 0;
+    width: fit-content;
+}
+
+.divw {
+    width: fit-content;
+}
+
+button {
+    border: none;
+    background-color: transparent;
+}
+
+input[type="checkbox"] {
+    width: 30px;
+    border: 1px solid #fff;
+    border-radius: 20px;
+    color: #625e5e;
+    accent-color: #625e5e;
+}
