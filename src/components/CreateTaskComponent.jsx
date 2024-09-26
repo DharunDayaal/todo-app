@@ -17,7 +17,7 @@ const CreateTaskComponent = ({ show, setShow }) => {
     <>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Add task { taskName ? taskName : 'TODO' }</Modal.Title>
+          <Modal.Title>Add task { taskName ? taskName : '' }</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
