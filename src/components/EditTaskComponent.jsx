@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import Modal from 'react-bootstrap/Modal';
+import { useState, useEffect } from "react";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import Modal from "react-bootstrap/Modal";
 
 const EditTaskComponent = ({ show, setShow, taskName, taskStatus, onSave }) => {
-  const [editName, setEditName] = useState(taskName || ""); 
+  const [editName, setEditName] = useState(taskName || "");
   const [status, setStatus] = useState(taskStatus || "incomplete");
 
-  const handleClose = () => setShow(false); 
+  const handleClose = () => setShow(false);
   const handleStatusChange = (e) => setStatus(e.target.value);
   const handleEditTaskName = (e) => setEditName(e.target.value);
   const handleSave = () => {

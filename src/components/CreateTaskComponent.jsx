@@ -1,27 +1,26 @@
-import React, { useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import Modal from 'react-bootstrap/Modal';
-import EditTaskComponent from './EditTaskComponent';
+import { useState } from "react";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import Modal from "react-bootstrap/Modal";
+import EditTaskComponent from "./EditTaskComponent";
 
 const CreateTaskComponent = ({ show, setShow, onSave }) => {
+  const [taskName, setTaskName] = useState("");
+  const [status, setStatus] = useState("incomplete");
 
-    const[taskName, setTaskName] = useState("");
-    const[status, setStatus] = useState("incomplete")
-
-    const handleClose = () => setShow(false); 
-    const handlestatus = (e) => setStatus(e.target.value)
-    const handleTaskName = (e) => setTaskName(e.target.value)
-    const handleSaveChanges = (e) => {
-      onSave(taskName, status)
-      setShow(false)
-    }
+  const handleClose = () => setShow(false);
+  const handlestatus = (e) => setStatus(e.target.value);
+  const handleTaskName = (e) => setTaskName(e.target.value);
+  const handleSaveChanges = (e) => {
+    onSave(taskName, status);
+    setShow(false);
+  };
 
   return (
     <>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Add task { taskName ? taskName : '' }</Modal.Title>
+          <Modal.Title>Add task {taskName ? taskName : ""}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>

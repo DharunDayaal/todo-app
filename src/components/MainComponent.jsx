@@ -1,17 +1,18 @@
-import React, { useRef, useState } from 'react';
-import './mainComponent.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashCan, faPen } from '@fortawesome/free-solid-svg-icons';
-import CreateTaskComponent from './CreateTaskComponent';
-import EditTaskComponent from './EditTaskComponent';
+import { useRef, useState } from "react";
+import "./mainComponent.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrashCan, faPen } from "@fortawesome/free-solid-svg-icons";
+import CreateTaskComponent from "./CreateTaskComponent";
+import EditTaskComponent from "./EditTaskComponent";
 
 const MainComponent = () => {
   const [taskList, setTaskList] = useState("all");
-  const [checked, setChecked] = useState(false);
-  const [taskAddComponent, setTaskAddComponent] = useState(false); 
+  const [taskAddComponent, setTaskAddComponent] = useState(false);
   const [editTaskComponent, setEditTaskComponent] = useState(false);
   const [tasks, setTasks] = useState([]);
   const [indexToEditTask, setIndexToEditTask] = useState(null);
+  const [checkedItems, setCheckedItems] = useState([]);
+  const indexReference = useRef(null)
 
   const handleSelectChange = (e) => {
     setTaskList(e.target.value);
@@ -21,13 +22,20 @@ const MainComponent = () => {
     setTaskAddComponent(true);
   };
 
-  const handleCheckboxState = (e) => {
-    setChecked(e.target.value);
+  const handleCheckboxChange = (event, index) => {
+    const { checked } = event.target;
+
+    if (checked) {
+      setCheckedItems([...checkedItems, index]);
+    } else {
+      setCheckedItems(checkedItems.filter((item) => item !== index));
+    }
   };
 
   const handleDeleteButton = (indexToDeleteTask) => {
     const deleteTask = tasks.filter((_, index) => index !== indexToDeleteTask);
     setTasks(deleteTask);
+    setCheckedItems(checkedItems.filter((item) => item !== indexToDeleteTask));
   };
 
   const handleEditButton = (index) => {
@@ -58,7 +66,11 @@ const MainComponent = () => {
             Add Task
           </button>
           {taskAddComponent && (
-            <CreateTaskComponent show={taskAddComponent} setShow={setTaskAddComponent} onSave={handleNewTask} />
+            <CreateTaskComponent
+              show={taskAddComponent}
+              setShow={setTaskAddComponent}
+              onSave={handleNewTask}
+            />
           )}
           <select
             onChange={handleSelectChange}
@@ -75,28 +87,38 @@ const MainComponent = () => {
             <h1>No TASK</h1>
           ) : (
             tasks.map((task, index) => (
-              <div key={index} className="w-100 d-flex justify-content-between align-items-center mb-3 mb-sm-3 mb-md-3 mb-lg-3 ">
+              <div
+                key={index}
+                className="w-100 d-flex justify-content-between align-items-center mb-3 mb-sm-3 mb-md-3 mb-lg-3 "
+              >
                 <div className="d-flex w-100 divw gap-4">
                   <input
                     type="checkbox"
-                    onChange={handleCheckboxState}
-                    checked={checked}
+                    onChange={(event) => handleCheckboxChange(event, index)}
+                    checked={checkedItems.includes(index)}
                   />
                   <div className="d-block align-items-center divw">
-                    <p>{task.taskName}</p>
+                    {/* <p>{task.taskName}</p> */}
+                    {checkedItems.includes(index) ? (
+                      <p style={{ textDecoration: "line-through" }}>
+                        {task.taskName}
+                      </p>
+                    ) : (
+                      <p>{task.taskName}</p>
+                    )}
                     <p>{task.status}</p>
                   </div>
                 </div>
                 <div className="d-flex justify-content-between btn-group btn-group-lg btn-group-sm align-items-center gap-3">
                   <button
                     onClick={() => handleDeleteButton(index)}
-                    style={{ width: '40px', height: '40px' }}
+                    style={{ width: "40px", height: "40px" }}
                   >
                     <FontAwesomeIcon icon={faTrashCan} />
                   </button>
                   <button
                     onClick={() => handleEditButton(index)}
-                    style={{ width: '40px', height: '40px' }}
+                    style={{ width: "40px", height: "40px" }}
                   >
                     <FontAwesomeIcon icon={faPen} />
                   </button>
@@ -105,8 +127,6 @@ const MainComponent = () => {
             ))
           )}
         </div>
-
-        {/* Conditionally render the EditTaskComponent */}
         {editTaskComponent && (
           <EditTaskComponent
             show={editTaskComponent}
