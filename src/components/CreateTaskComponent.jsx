@@ -4,7 +4,7 @@ import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import EditTaskComponent from './EditTaskComponent';
 
-const CreateTaskComponent = ({ show, setShow }) => {
+const CreateTaskComponent = ({ show, setShow, onSave }) => {
 
     const[taskName, setTaskName] = useState("");
     const[status, setStatus] = useState("incomplete")
@@ -12,6 +12,10 @@ const CreateTaskComponent = ({ show, setShow }) => {
     const handleClose = () => setShow(false); 
     const handlestatus = (e) => setStatus(e.target.value)
     const handleTaskName = (e) => setTaskName(e.target.value)
+    const handleSaveChanges = (e) => {
+      onSave(taskName, status)
+      setShow(false)
+    }
 
   return (
     <>
@@ -46,7 +50,7 @@ const CreateTaskComponent = ({ show, setShow }) => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleClose}>
+          <Button variant="primary" onClick={handleSaveChanges}>
             Save Changes
           </Button>
         </Modal.Footer>

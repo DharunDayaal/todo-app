@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import './mainComponent.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan, faPen } from '@fortawesome/free-solid-svg-icons';
 import CreateTaskComponent from './CreateTaskComponent';
 import EditTaskComponent from './EditTaskComponent';
 
-const ButtonsComponent = () => {
+const MainComponent = () => {
   const [taskList, setTaskList] = useState("all");
-  const [checked, setChecked] = useState("off");
+  const [checked, setChecked] = useState(false);
   const [taskAddComponent, setTaskAddComponent] = useState(false); 
   const [editTaskComponent, setEditTaskComponent] = useState(false);
+  const [tasks, setTasks] = useState([])
+  const taskIndexReference = useRef(null)
 
   const handleSelectChange = (e) => {
     setTaskList(e.target.value);
@@ -17,20 +19,26 @@ const ButtonsComponent = () => {
 
   const handleAddTaskButton = () => {
     setTaskAddComponent(true);
-    console.log("Add Task Button clicked");
   };
 
   const handleCheckboxState = (e) => {
     setChecked(e.target.value);
   };
 
-  const handleDeleteButton = () => {
-    console.log("Delete Button clicked");
+  const handleDeleteButton = (indexToDelelteTask) => {
+    const deleteTask = tasks.filter((_, index) => index !== indexToDelelteTask)
+    setTasks(deleteTask)
   };
 
   const handleEditButton = () => {
     setEditTaskComponent(true);
   };
+
+  const handleSaveChanges = (taskName, status) => {
+    const newTask = {taskName, status};
+    setTasks([...tasks, newTask])
+    console.log("Task added: ", newTask)
+  }
 
   return (
     <>
@@ -41,7 +49,7 @@ const ButtonsComponent = () => {
           </button>
           {/* Pass taskAddComponent as a prop to CreateTaskComponent */}
           {taskAddComponent && (
-            <CreateTaskComponent show={taskAddComponent} setShow={setTaskAddComponent} />
+            <CreateTaskComponent show={taskAddComponent} setShow={setTaskAddComponent} onSave={handleSaveChanges} />
           )}
           <select
             onChange={handleSelectChange}
@@ -54,34 +62,39 @@ const ButtonsComponent = () => {
           </select>
         </div>
         <div className="task-list bg-dark-subtle">
-          <div className="w-100 d-flex justify-content-between align-items-center">
-            <div className="d-flex w-100 divw gap-4">
-              <input type="checkbox" onChange={handleCheckboxState} value={checked} />
-              <div className="d-block align-items-center divw">
-                <p>egwghi</p>
-                <p>ejakfkla</p>
+          {
+            tasks.map((task, index) => (
+              <div key={index} className="w-100 d-flex justify-content-between align-items-center">
+                <div className="d-flex w-100 divw gap-4">
+                  <input type="checkbox" onChange={handleCheckboxState} checked={checked} />
+                  <div className="d-block align-items-center divw">
+                    <p>{task.taskName}</p>
+                    <p>{task.status}</p>
+                  </div>
+                </div>
+                <div className="d-flex justify-content-between btn-group btn-group-lg btn-group-sm align-items-center gap-3">
+                  <button
+                    onClick={() => handleDeleteButton(index)}
+                    style={{ width: '40px', height: '40px' }}
+                  >
+                    <FontAwesomeIcon icon={faTrashCan} />
+                  </button>
+                  <button
+                    onClick={handleEditButton}
+                    style={{ width: '40px', height: '40px' }}
+                  >
+                    <FontAwesomeIcon icon={faPen} />
+                  </button>
+                  {editTaskComponent && <EditTaskComponent show={editTaskComponent} setShow={setEditTaskComponent} />}
+                </div>
               </div>
-            </div>
-            <div className="d-flex justify-content-between btn-group btn-group-lg btn-group-sm align-items-center gap-3">
-              <button
-                onClick={handleDeleteButton}
-                style={{ width: '40px', height: '40px' }}
-              >
-                <FontAwesomeIcon icon={faTrashCan} />
-              </button>
-              <button
-                onClick={handleEditButton}
-                style={{ width: '40px', height: '40px' }}
-              >
-                <FontAwesomeIcon icon={faPen} />
-              </button>
-              {editTaskComponent && <EditTaskComponent show={editTaskComponent} setShow={setEditTaskComponent} />}
-            </div>
-          </div>
+            ))
+          }
+          
         </div>
       </div>
     </>
   );
 };
 
-export default ButtonsComponent;
+export default MainComponent;
