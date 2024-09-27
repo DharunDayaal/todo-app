@@ -10,8 +10,8 @@ const MainComponent = () => {
   const [checked, setChecked] = useState(false);
   const [taskAddComponent, setTaskAddComponent] = useState(false); 
   const [editTaskComponent, setEditTaskComponent] = useState(false);
-  const [tasks, setTasks] = useState([])
-  const taskIndexReference = useRef(null)
+  const [tasks, setTasks] = useState([]);
+  const [indexToEditTask, setIndexToEditTask] = useState(null);
 
   const handleSelectChange = (e) => {
     setTaskList(e.target.value);
@@ -25,20 +25,30 @@ const MainComponent = () => {
     setChecked(e.target.value);
   };
 
-  const handleDeleteButton = (indexToDelelteTask) => {
-    const deleteTask = tasks.filter((_, index) => index !== indexToDelelteTask)
-    setTasks(deleteTask)
+  const handleDeleteButton = (indexToDeleteTask) => {
+    const deleteTask = tasks.filter((_, index) => index !== indexToDeleteTask);
+    setTasks(deleteTask);
   };
 
-  const handleEditButton = () => {
+  const handleEditButton = (index) => {
+    setIndexToEditTask(index);
     setEditTaskComponent(true);
   };
 
+  const handleNewTask = (taskName, status) => {
+    const newTask = { taskName, status };
+    setTasks([...tasks, newTask]);
+    console.log("Task added: ", newTask);
+  };
+
   const handleSaveChanges = (taskName, status) => {
-    const newTask = {taskName, status};
-    setTasks([...tasks, newTask])
-    console.log("Task added: ", newTask)
-  }
+    const editTask = tasks.map((task, index) =>
+      index === indexToEditTask ? { taskName, status } : task
+    );
+    setTasks(editTask);
+    setEditTaskComponent(false);
+    console.log("Task Edited: ", taskName, status);
+  };
 
   return (
     <>
@@ -47,9 +57,8 @@ const MainComponent = () => {
           <button className="btn btn-primary" onClick={handleAddTaskButton}>
             Add Task
           </button>
-          {/* Pass taskAddComponent as a prop to CreateTaskComponent */}
           {taskAddComponent && (
-            <CreateTaskComponent show={taskAddComponent} setShow={setTaskAddComponent} onSave={handleSaveChanges} />
+            <CreateTaskComponent show={taskAddComponent} setShow={setTaskAddComponent} onSave={handleNewTask} />
           )}
           <select
             onChange={handleSelectChange}
@@ -62,11 +71,17 @@ const MainComponent = () => {
           </select>
         </div>
         <div className="task-list bg-dark-subtle">
-          {
+          {tasks.length === 0 ? (
+            <h1>No TASK</h1>
+          ) : (
             tasks.map((task, index) => (
-              <div key={index} className="w-100 d-flex justify-content-between align-items-center">
+              <div key={index} className="w-100 d-flex justify-content-between align-items-center mb-3 mb-sm-3 mb-md-3 mb-lg-3 ">
                 <div className="d-flex w-100 divw gap-4">
-                  <input type="checkbox" onChange={handleCheckboxState} checked={checked} />
+                  <input
+                    type="checkbox"
+                    onChange={handleCheckboxState}
+                    checked={checked}
+                  />
                   <div className="d-block align-items-center divw">
                     <p>{task.taskName}</p>
                     <p>{task.status}</p>
@@ -80,18 +95,27 @@ const MainComponent = () => {
                     <FontAwesomeIcon icon={faTrashCan} />
                   </button>
                   <button
-                    onClick={handleEditButton}
+                    onClick={() => handleEditButton(index)}
                     style={{ width: '40px', height: '40px' }}
                   >
                     <FontAwesomeIcon icon={faPen} />
                   </button>
-                  {editTaskComponent && <EditTaskComponent show={editTaskComponent} setShow={setEditTaskComponent} />}
                 </div>
               </div>
             ))
-          }
-          
+          )}
         </div>
+
+        {/* Conditionally render the EditTaskComponent */}
+        {editTaskComponent && (
+          <EditTaskComponent
+            show={editTaskComponent}
+            setShow={setEditTaskComponent}
+            taskName={tasks[indexToEditTask].taskName}
+            status={tasks[indexToEditTask].status}
+            onSave={handleSaveChanges}
+          />
+        )}
       </div>
     </>
   );
