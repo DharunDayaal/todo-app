@@ -12,6 +12,8 @@ const MainComponent = () => {
   const [tasks, setTasks] = useState([]);
   const [indexToEditTask, setIndexToEditTask] = useState(null);
   const [checkedItems, setCheckedItems] = useState([]);
+  const [date, setDate] = useState('');
+  const [time, setTime] = useState('')
   const indexReference = useRef(null)
 
   const handleSelectChange = (e) => {
@@ -20,6 +22,7 @@ const MainComponent = () => {
 
   const handleAddTaskButton = () => {
     setTaskAddComponent(true);
+    handleDateTime()
   };
 
   const handleCheckboxChange = (event, index) => {
@@ -41,6 +44,7 @@ const MainComponent = () => {
   const handleEditButton = (index) => {
     setIndexToEditTask(index);
     setEditTaskComponent(true);
+    handleDateTime()
   };
 
   const handleNewTask = (taskName, status) => {
@@ -58,8 +62,17 @@ const MainComponent = () => {
     console.log("Task Edited: ", taskName, status);
   };
 
+  const handleDateTime = () => {
+    const dateAndTime = new Date()
+    const formattedDate = dateAndTime.toLocaleDateString()
+    const formattedTime = dateAndTime.toLocaleTimeString()
+    setDate(formattedDate)
+    setTime(formattedTime)
+
+  }
+
   return (
-    <>
+    <>    
       <div className="main">
         <div className="d-flex justify-content-between align-items-center">
           <button className="btn btn-primary" onClick={handleAddTaskButton}>
@@ -106,7 +119,7 @@ const MainComponent = () => {
                     ) : (
                       <p>{task.taskName}</p>
                     )}
-                    <p>{task.status}</p>
+                    <p>{date } {time}</p>
                   </div>
                 </div>
                 <div className="d-flex justify-content-between btn-group btn-group-lg btn-group-sm align-items-center gap-3">
