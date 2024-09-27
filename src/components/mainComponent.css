@@ -7,6 +7,7 @@ h1 {
     font-size: 22px;
     font-weight: 600;
     font-family: 'Poppins', 'Nato-sans', sans-serif;
+    user-select: none;
 }
 
 .task-list {
@@ -25,6 +26,7 @@ p {
     font-weight: 500;
     letter-spacing: 0.4px;
     line-break: auto;
+    user-select: none;
 }
 
 .divw {
